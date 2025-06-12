@@ -120,7 +120,7 @@ if uploaded_file:
         curvas_categoria = [curva[1] for curva in eventos_normalizados]
 
         # Filtrar curvas vacías y con valores NaN
-        curvas_categoria = [curva for curva in curvas_categoria if not np.isnan(curva).all()]
+        curvas_categoria = [curva for curva in curvas_categoria if len(curva) > 0 and not np.isnan(curva).all()]
         
         # Verificar que no esté vacía antes de promediar
         if len(curvas_categoria) > 0:
@@ -181,4 +181,3 @@ if uploaded_file:
         file_name='eventos_y_hietogramas_sinteticos.xlsx',
         mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
-
