@@ -99,7 +99,6 @@ if uploaded_file:
         '120-180 min': 'red'
     }
 
-    # Función para calcular hietogramas sintéticos
     def calcular_hietograma_sintetico(eventos, categoria, intervalo=5):
         eventos_categoria = []
         for evento in eventos:
@@ -120,7 +119,10 @@ if uploaded_file:
 
         curvas_categoria = [curva[1] for curva in eventos_normalizados]
 
-        # Verifica si las curvas no están vacías y contiene NaN
+        # Filtrar curvas vacías y con valores NaN
+        curvas_categoria = [curva for curva in curvas_categoria if not np.isnan(curva).all()]
+        
+        # Verificar que no esté vacía antes de promediar
         if len(curvas_categoria) > 0:
             # Eliminar NaN en las curvas antes de calcular el promedio
             curvas_categoria = [np.nan_to_num(curva) for curva in curvas_categoria]
@@ -179,3 +181,4 @@ if uploaded_file:
         file_name='eventos_y_hietogramas_sinteticos.xlsx',
         mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
+
