@@ -99,6 +99,7 @@ if uploaded_file:
         '120-180 min': 'red'
     }
 
+    # Función para calcular hietogramas sintéticos
     def calcular_hietograma_sintetico(eventos, categoria, intervalo=5):
         eventos_categoria = []
         for evento in eventos:
@@ -109,6 +110,7 @@ if uploaded_file:
                (categoria == '120-180 min' and 120 <= duracion <= 180):
                 eventos_categoria.append(evento)
 
+        # Para cada evento en la categoría, se normalizan las precipitaciones
         eventos_normalizados = []
         for evento in eventos_categoria:
             ptotal = evento['Precipitacion'].sum()
@@ -118,7 +120,7 @@ if uploaded_file:
 
         curvas_categoria = [curva[1] for curva in eventos_normalizados]
 
-        # Verifica si las curvas no están vacías y si contiene NaN
+        # Verifica si las curvas no están vacías y contiene NaN
         if len(curvas_categoria) > 0:
             # Eliminar NaN en las curvas antes de calcular el promedio
             curvas_categoria = [np.nan_to_num(curva) for curva in curvas_categoria]
