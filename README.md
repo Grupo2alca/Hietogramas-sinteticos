@@ -1,0 +1,1 @@
+# Hietogramas-sinteticos
