@@ -99,7 +99,6 @@ if uploaded_file:
         '120-180 min': 'red'
     }
 
-    # Función para calcular hietogramas sintéticos
     def calcular_hietograma_sintetico(eventos, categoria, intervalo=5):
         eventos_categoria = []
         for evento in eventos:
@@ -110,7 +109,6 @@ if uploaded_file:
                (categoria == '120-180 min' and 120 <= duracion <= 180):
                 eventos_categoria.append(evento)
 
-        # Para cada evento en la categoría, se normalizan las precipitaciones
         eventos_normalizados = []
         for evento in eventos_categoria:
             ptotal = evento['Precipitacion'].sum()
@@ -118,28 +116,26 @@ if uploaded_file:
             lluvia_norm = evento['Precipitacion'].cumsum()/ptotal
             eventos_normalizados.append((tiempo_norm, lluvia_norm))
 
-        # Promedio de los eventos normalizados
         curvas_categoria = [curva[1] for curva in eventos_normalizados]
 
-        # Verifica si las curvas no están vacías
+        # Verifica si las curvas no están vacías y si contiene NaN
         if len(curvas_categoria) > 0:
+            # Eliminar NaN en las curvas antes de calcular el promedio
+            curvas_categoria = [np.nan_to_num(curva) for curva in curvas_categoria]
             promedio_categoria = np.nanmean(curvas_categoria, axis=0)
         else:
             promedio_categoria = np.zeros_like(curvas_categoria[0])  # Asignar ceros si está vacío
 
         return promedio_categoria, eventos_normalizados
 
-    # Cálculo de los patrones sintéticos para cada categoría
     hietogramas_sinteticos = {}
 
     for cat in categorias:
         promedio_categoria, eventos_normalizados = calcular_hietograma_sintetico(eventos, cat)
-        # Crear el gráfico para cada categoría
         t_norm = np.linspace(0, 1, len(promedio_categoria))
         coef_cat = np.polyfit(t_norm, promedio_categoria, 2)
         polinomio_cat = np.poly1d(coef_cat)
         
-        # Graficar el hietograma sintético
         fig, ax = plt.subplots(figsize=(8, 5))
         ax.plot(t_norm, promedio_categoria, label="Promedio Normalizado", color='gray')
         ax.plot(t_norm, polinomio_cat(t_norm), label="Ajuste Polinomial", color='red')
@@ -149,7 +145,6 @@ if uploaded_file:
         ax.legend()
         st.pyplot(fig)
 
-        # Agregar la ecuación para el patrón sintético
         st.subheader(f"Ecuación del Patrón Sintético para {cat}")
         st.latex(f"P^*(t) = {coef_cat[0]:.4f} t^2 + {coef_cat[1]:.4f} t + {coef_cat[2]:.4f}")
 
