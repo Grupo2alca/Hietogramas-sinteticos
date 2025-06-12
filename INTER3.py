@@ -1,8 +1,3 @@
-# ======================================
-# INTER3.PY FINAL - ANÁLISIS DE LLUVIA
-# PARA ENTREGA UNIVERSIDAD ✅
-# ======================================
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -115,7 +110,7 @@ if uploaded_file:
                (categoria == '120-180 min' and 120 <= duracion <= 180):
                 eventos_categoria.append(evento)
 
-        # Normalizar eventos
+        # Para cada evento en la categoría, se normalizan las precipitaciones
         eventos_normalizados = []
         for evento in eventos_categoria:
             ptotal = evento['Precipitacion'].sum()
@@ -125,7 +120,12 @@ if uploaded_file:
 
         # Promedio de los eventos normalizados
         curvas_categoria = [curva[1] for curva in eventos_normalizados]
-        promedio_categoria = np.nanmean(curvas_categoria, axis=0)
+
+        # Verifica si las curvas no están vacías
+        if len(curvas_categoria) > 0:
+            promedio_categoria = np.nanmean(curvas_categoria, axis=0)
+        else:
+            promedio_categoria = np.zeros_like(curvas_categoria[0])  # Asignar ceros si está vacío
 
         return promedio_categoria, eventos_normalizados
 
@@ -153,7 +153,6 @@ if uploaded_file:
         st.subheader(f"Ecuación del Patrón Sintético para {cat}")
         st.latex(f"P^*(t) = {coef_cat[0]:.4f} t^2 + {coef_cat[1]:.4f} t + {coef_cat[2]:.4f}")
 
-        # Guardar el patrón sintético
         hietogramas_sinteticos[cat] = {
             'promedio': promedio_categoria,
             'ajuste': polinomio_cat
